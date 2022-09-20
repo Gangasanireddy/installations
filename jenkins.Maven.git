@@ -1,0 +1,349 @@
+Jenkins Management Script
+------------------------
+
+Problem Statement: You working as DevOps engineer needs to continuously manage Jenkins installation and other maintenance work. This work is done manually by connecting to Linux machine without any automation. Develop a shell script which will automate these tasks for you so that you don’t have to do any activity manually.
+
+Steps to perform are as below:
+    1) Create functions in shell script for various jenkins maintenance operations.
+    2) Design a menu as per below details to integrate installation and other operations.
+
+    1) Install Jenkins
+    2) Uninstall Jenkins
+    3) Stop Jenkins
+    4) Start Jenkins
+    5) Restart Jenkins
+code:
+
+-->vi jenkins.bash
+
+echo "perform jenkins tasks"
+
+install_function(){
+         curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo tee \
+    /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+     echo  deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+    https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+    /etc/apt/sources.list.d/jenkins.list > /dev/null
+    sudo apt-get update
+    sudo apt-get install fontconfig openjdk-11-jre
+    sudo apt-get install jenkins
+
+
+}
+uninstall_function(){
+        sudo apt-get -y remove jenkins
+        echo "jenkins  uninstall successfully"
+        service jenkins status
+}
+stop_function(){
+        sudo service jenkins stop
+        echo "jenkins stop successfully"
+        service jenkins status
+}
+start_function(){
+        sudo service jenkins start
+        echo "jenkins start successfully"
+        service jenkins status
+}
+restart_function(){
+        sudo service jenkins restart
+        echo "jenkins restarted successfully"
+        service jenkins status
+}
+i=$1
+select i  in Install_Jenkins  Uninstall-_Jenkins Stop_Jenkins  Start_Jenkins Restart_Jenkins
+do
+        case $i in
+
+                Install_Jenkins)
+                        install_function
+                        break;;
+
+                UninstallL_Jenkins)
+                        uninstall_function
+                        break;;
+
+                Stop_Jenkins)
+                        stop_function
+                        break;;
+
+                Start_Jenkins)
+                        start_function
+                        break;;
+
+                Restart_Jenkins)
+                     restart_function
+                        break;;
+
+        esac
+
+done
+
+--------------------------------------------------------------------------------------------------------------------------------
+2) Maven Automation Script
+
+Problem Statement: You need to develop a shell script for providing build automation to developers to automate build process. Take inputs from developers on which repo to clone and which maven process needs to be triggered.
+
+Steps to perform are as below:
+    1) Create functions in shell script for various build automation operations.
+    2) Design a menu as per below details:
+
+Take a value from Developer on repo and then take inputs for various operations as per below:
+
+    1) Compilation
+    2) Test Compilation
+    3) Test execution
+    4) Packaging
+    5) Install artifacts
+    6) Maven Clea
+    7) n  
+
+
+https://github.com/anujdevopslearn/MavenBuild
+
+https://github.com/anujdevopslearn/SonarQubeCoverageJava
+
+https://github.com/anujdevopslearn/SpringBootDocker
+
+mvn clean	Clean 
+
+mvn compile	Compilation
+
+mvn test	Test Cases
+
+mvn test-compile 	Test cases compilation
+
+mvn package		Packaging
+
+mvn install		Storing artifacts locally
+
+
+code:
+----
+
+echo "perform maven tasks"
+cloning_gitrepo(){
+
+        echo "git repo want to clone"
+        i=$2
+        select i in MAVEN_PROJECT SPRING_BOOT JAVA
+        do
+                case $i in
+                        MAVEN_PROJECT)
+                          git clone https://github.com/anujdevopslearn/MavenBuild.git
+                           break;;
+                        SPRING_BOOT)
+                          git clone https://github.com/anujdevopslearn/SpringBootDocker.git
+                          break;;
+                        JAVA)
+                          git clone https://github.com/anujdevopslearn/SonarQubeCoverageJava.git
+                          break;;
+                esac
+        done
+
+}
+
+compile_function(){
+        echo "enter repo name"
+        read file
+        cd $file
+        mvn compile
+        echo "commpile successfully"
+}
+test_function(){
+        echo "enter repo name"
+        read file
+        cd $file
+        mvn test-compile
+        echo "test compile successfully"
+}
+executive_function(){
+	echo "enter repo name"
+        read file
+        cd $file
+        mvn test
+        echo "test execution successfully"
+
+}
+packaging_function(){
+        echo "enter repo name"
+        read file
+        cd $file
+        mvn package
+        echo "packaging successfully"
+
+}
+install_function(){
+        echo "enter repo name"
+        read file
+        cd $file
+        mvn install
+        echo "install artifacts success fully"
+
+}
+clean_function(){
+        echo "enter repo name"
+        read file
+        cd $file
+        mvn clean
+        echo "maven cleamn successfully"
+
+}
+
+k = $1
+select k in CLONING COMPILATION TEST_COMPILE TEST_EXECUTE PACKAGE_MAVEN INSTALL_ARTIFACTS CLEAN_MAVEN
+do
+        case $k in
+                CLONING)
+                        cloning_gitrepo
+                        break;;
+                COMPILATION)
+                        compile_function
+                        break;;
+                TEST_EXECUTE)
+                        executive_function
+                        break;;
+                TEST_COMPILE)
+                        test_function
+                        break;;
+                PACKAGE_MAVEN)
+                        packaging_function
+                        break;;
+                INSTALL_ARTIFACTS)
+                        install_function
+                        break;;
+                CLEAN_MAVEN)
+                        clean_function
+                        break
+                        ;;
+        esac
+done
+----------------------------------------------------------------------------------------------------------------------------
+3) Shell script and Git Operations Integration
+
+Problem Statement: You joined a development team as DevOps engineer and wants to automate some of basic Git operations. We need to make a interactive script based out of Menu mechanism which can take inputs from end user on what task needs to be executed.
+
+Below is the sequence of steps which is required for this problem:
+
+    1 Create a script to take inputs from user for basic operations such as Commits, merging, reverting or restore operations.
+    2 Execute script and test if all operations are being covered by shell script.
+
+Design Below mentioned Menu for supporting below operations:
+
+    1 Basic Git add/commit Operation
+    2 Creating Branch Operation
+    3 Delete Branch Operation
+    4 Reverting Git Changes Operation
+
+
+vi editor code:
+
+echo "perform git tasks"
+
+commit(){
+        echo "enter file names"
+        read files
+        git add $files
+        echo "enter commit"
+        read message
+        git commit -m "$message"
+}
+branch_create(){
+        echo "give branch name"
+        read branch
+        git branch $branch
+}
+branch_delete(){
+        echo "enter branch name"
+        read branch
+        git branch -d $branch
+}
+revertfunction(){
+        echo "enter commit id for revert"
+        read id
+        git revert "$id"
+}
+
+OP=$1
+
+
+select OP in commit createbranch deletebranch reverting
+
+do
+        case $OP in
+                commit)
+                        commit
+                        break;;
+
+                createbranch)
+                        branch_create
+                        break;;
+
+                deletebranch)
+                        branch_delete
+                        break;;
+
+                reverting)
+                        revertfunction
+                        break;;
+
+        esac
+
+done
+----------------------------------------------------------------------------------------------------------------
+4) Problem Statement: You are working as DevOps engineer and your development team wants to automate CI CD workflows in order to perform build automation, test cases automation and deployment automation. While onboarding application on CI CD workflow automate below steps:
+
+Code Repository:	https://github.com/anujdevopslearn/MavenBuild
+
+    1 Create a new CI CD pipeline using Jenkins.
+    2 Automate build process, test cases execution, SonarQube analysis and Tomcat Deployment.
+    3 Deploy Tomcat Apache on below server:
+http://18.212.14.103:8080 (username: tomcat, password: password)
+    4 Connect to SonarQube and publish metrics using below SonarQube.
+http://18.212.14.103:9000/	(username: admin, password: password)
+    5 Once integration is completed you would be able to deploy source code to Tomcat Apache and scan source code.
+       
+Solution:
+
+Installion of jenkins done by using automated script.Then
+1)Creating a new pipeline on jenkins named as project.(Dashboard-->New item--><pipeline name>-->Pipeline)
+
+2)To automate the build process, test cases execution, SonarQube analysis and Tomcat Deployment the below are pipeline script.
+
+Pipeline script:
+---------------
+node('') {
+    
+    def SonarScanner = tool name: 'SonarScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+	stage ('checkout code'){
+	checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: 'SonarQubeToken', url: 'https://github.com/anujdevopslearn/MavenBuild']]])
+	}
+	stage ('Build'){
+		sh "mvn clean install -Dmaven.test.skip=true"
+	}
+
+	stage ('Test Cases Execution'){
+		sh "mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -Pcoverage-per-test"
+	}
+
+	stage ('Sonar Analysis'){
+	  sh 'mvn sonar:sonar -Dsonar.host.url=http://3.86.198.173:9000/ -Dsonar.login=admin -Dsonar.password=password'
+    }
+    
+    stage ('Deployment'){
+		deploy adapters: [tomcat9(credentialsId: 'TomcatGreds', path: '', url: 'http://3.86.198.173:8080/')], contextPath: 'mounishkumar', war: 'target/*.war'
+	}
+}
+
+
+
+
+Pipeline Syntax:
+Here we can generate the script by giving the requirements we want.
+
+
+Stage View:
+
+
+
+
